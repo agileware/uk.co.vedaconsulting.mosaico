@@ -290,8 +290,12 @@ function _mosaico_civicrm_mosaicoToCiviTokens(&$content) {
  *   But there were still mosaico tokens present which didn't get parsed.
  * This is pretty much a direct copy from CRM_Mailing_Page_View::run
  */
-function _mosaico_civicrm_replaceTokens($content, $html = TRUE) {
-  $mailingID = CRM_Utils_Request::retrieve('id', 'String', CRM_Core_DAO::$_nullObject, TRUE);
+function _mosaico_civicrm_replaceTokens($content, $html = TRUE, $id = NULL) {
+  $mailingID = !empty($id)? $id : CRM_Utils_Request::retrieve('id', 'String', CRM_Core_DAO::$_nullObject, FALSE);
+  if(empty($mailingID)) {
+    return $content;
+  }
+
   $contactID = CRM_Core_Session::getLoggedInContactID();
 
   $mailing = new CRM_Mailing_BAO_Mailing();
@@ -362,7 +366,7 @@ function mosaico_civicrm_alterMailParams(&$params, $context) {
     _mosaico_civicrm_mosaicoToCiviTokens($params['html']);
     // Replace tokens with real values
     if (isset($params['html'])) {
-      $html = _mosaico_civicrm_replaceTokens($params['html'], TRUE);
+      $html = _mosaico_civicrm_replaceTokens($params['html'], TRUE, (!empty($params['id'])? $params['id'] : NULL));
       if ($html) {
         $params['html'] = $html;
       }
