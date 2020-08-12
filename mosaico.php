@@ -413,7 +413,7 @@ function mosaico_civicrm_pre($op, $objectName, $id, &$params) {
  */
 function mosaico_civicrm_alterMailContent(&$content) {
   if (isset($content['html'])) {
-    $re = '/src="(.*q=civicrm(%2F|\/)mosaico(%2F|\/)img&.*)"/mi';
+    $re = '/src=([^\'"]+(%2F|\/)mosaico(%2F|\/)img^[^\'"]+)/mi';
     $content['html'] = preg_replace_callback($re, 'CRM_Mosaico_Utils::cacheImage', $content['html']);
   }
 }

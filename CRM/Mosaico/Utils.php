@@ -312,33 +312,28 @@ class CRM_Mosaico_Utils {
     CRM_Utils_System::civiExit();
   }
 
-  /**
-   * Called in hook_civicrm_alterMailContent
-   * Generate the static image and return the static url for the image
-   *
-   * @param array $matches
-   *                      The regex matches
-   *
-   * @return string
-   *               The static url
-   */
-  public static function cacheImage($matches) {
-    $url = urldecode(html_entity_decode($matches[1]));
-    parse_str(parse_url($url, PHP_URL_QUERY), $params);
+	/**
+	 * Called in hook_civicrm_alterMailContent
+	 * Generate the static image and return the static url for the image
+	 *
+	 * @param array $matches
+	 *                      The regex matches
+	 *
+	 * @return string
+	 *               The static url
+	 */
+	public static function cacheImage($matches) {
+		$url = urldecode(html_entity_decode($matches[1]));
+		parse_str(parse_url($url, PHP_URL_QUERY), $params);
 
-    // No placeholder
-    if ($params['method'] == 'placeholder') {
-      return '';
-    }
-    // Generate the static image by visiting the URL
-    file_get_contents($url);
+		// Generate the static image by visiting the URL
+		file_get_contents($url);
 
-    $config = self::getConfig();
-    $path_parts = pathinfo($params['src']);
-    $static_url = $config['BASE_URL'] . $config['STATIC_URL'] . $path_parts["basename"];
-    // Civi::log()->info("static url: ".$static_url);
-    return 'src="'. $static_url . '"';
-  }
+		$config = self::getConfig();
+		$path_parts = pathinfo($params['src']);
+		$static_url = $config['BASE_URL'] . $config['STATIC_URL'] . $path_parts["basename"];
+		return 'src="'. $static_url;
+	}
 
   /**
    * @param string $file
